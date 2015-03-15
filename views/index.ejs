@@ -1,16 +1,63 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="/socket.io/socket.io.js"></script>
     <script src="/javascripts/jq.js"></script>
 	<script>
-	  var socket = io();
+		var id = "<%=name%>".split(" ").join("_");
+
+		var active = false;;
+		navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+		var socket = io();
+		socket.emit('reg', {name: id});
+
+		socket.on('new', function (data) {
+			$("body").append('<button id="' + data.name + '" class="off">'+data.name+'</button>');
+		});
+
+		socket.on('others', function (data) {
+			for (var i in data) {
+				if (i == id) {
+			  		$("body").prepend('<button id="' + i + '" class="me '+(data[i]?'on':'off')+'">'+i+'</button>');
+			  		$("#" + i).click(function (e) {
+			  			e.preventDefault();
+						active = !active;
+						if (active) $(this).removeClass('off').addClass('on');
+						else $(this).removeClass('on').addClass('off');
+						socket.emit(active?'on':'off');
+			  		})
+			  		continue;
+				}
+				$("body").append('<button id="' + i + '" class="'+(data[i]?'on':'off')+'">'+i+'</button>');
+				!function (i) {
+					$("#"+i).click(function (e) {
+						e.preventDefault();
+						socket.emit('vib', {name: i});
+					});
+				}(i);
+			}
+		})
+		socket.on('you', function (data) {
+			me = data.name;
+		});
+
+		socket.on('del', function (data) {
+			$("#" + data.name).remove();
+		})
+
+		socket.on('on', function (data) {
+			$("#" + data.name).removeClass('off').addClass('on');
+		})
+		socket.on('off', function (data) {
+			$("#" + data.name).removeClass('on').addClass('off');
+		})
+		socket.on('vib', function () {
+			console.log("vib");
+			window.navigator.vibrate(200);
+		})
 	</script>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
   </body>
 </html>

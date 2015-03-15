@@ -20,8 +20,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', function (req, res) {
-    res.render('index', {title: 'Hello'})
+app.get('/:id', function (req, res, next) {
+    if (req.params.id == null) return next();
+    res.render('index', {name: req.params.id})
 });
 
 // catch 404 and forward to error handler
