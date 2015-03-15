@@ -28,3 +28,12 @@ button.active {
 button.me {
 	border:3px solid black;
 }
+
+
+.nums {
+	width: 33.3%;
+	float: left;
+	margin-top:20px;
+	border:1px solid black;
+	font-size: 55px;
+}

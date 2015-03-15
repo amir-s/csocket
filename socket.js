@@ -31,6 +31,13 @@ module.exports = function (io) {
 			if (socks[data.name]) {
 				socks[data.name].emit('vib');
 			}
+		});
+
+		socket.on('num', function (data) {
+			socket.broadcast.emit('num', {
+				name: socket.name,
+				n: data.n
+			});
 		})
 
 	});
