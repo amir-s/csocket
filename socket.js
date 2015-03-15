@@ -28,6 +28,7 @@ module.exports = function (io) {
 		})
 
 		socket.on('vib', function (data) {
+			console.log(data.name + " -- " + socks[data.name]);
 			if (socks[data.name]) {
 				socks[data.name].emit('vib');
 			}
