@@ -16,6 +16,10 @@
 
 		socket.on('new', function (data) {
 			$("#body").append('<button id="' + data.name + '" class="off">'+data.name+'</button>');
+			$("#"+data.name).click(function (e) {
+				e.preventDefault();
+				socket.emit('vib', {name: $(this).attr('id')});
+			});
 		});
 
 		socket.on('others', function (data) {
@@ -32,8 +36,8 @@
 			  		continue;
 				}
 				$("#body").append('<button id="' + i + '" class="'+(data[i]?'on':'off')+'">'+i+'</button>');
-				
 				$("#"+i).click(function (e) {
+					console.log("here" + i);
 					e.preventDefault();
 					socket.emit('vib', {name: $(this).attr('id')});
 				});
@@ -57,7 +61,7 @@
 			window.navigator.vibrate(200);
 		})
 		socket.on('vib', function () {
-			window.navigator.vibrate(200);
+			window.navigator.vibrate([100, 200, 100, 200, 100]);
 		});
 
 		socket.on('num', function (data) {
